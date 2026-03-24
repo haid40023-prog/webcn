@@ -3,7 +3,7 @@ import { site } from "@/data/site";
 import { blogPosts } from "@/data/blogPosts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const url = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const url = "https://rutvitrasauhanoi.vn";
 
   const staticRoutes = [
     "/",
