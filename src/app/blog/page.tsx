@@ -1,18 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { blogPosts } from "@/data/blogPosts";
 import { site } from "@/data/site";
+import { getSiteUrl } from "@/lib/siteUrl";
+import { getLatestPosts } from "@/lib/blog";
 import { CallToActionStrip } from "@/components/CTA/CallToActionStrip";
+import { BlogPostCard } from "@/components/blog/BlogPostCard";
 
-function formatDate(iso: string) {
-  const d = new Date(iso);
-  // Tránh phụ thuộc locale máy chủ; chỉ hiển thị kiểu Việt Nam đơn giản.
-  return d.toLocaleDateString("vi-VN", { year: "numeric", month: "2-digit", day: "2-digit" });
-}
-
-export const metadata = {
-  title: `Blog - ${site.name}`,
+export const metadata: Metadata = {
+  title: "Blog",
   description:
-    "Khu vực bài viết hỗ trợ SEO và giải thích cách tính phí tham khảo cho ví trả sau & thẻ tín dụng. Đăng bài thường xuyên để tối ưu tìm kiếm.",
+    "Bài viết về rút ví trả sau, thẻ tín dụng và cách tính phí tham khảo. Cập nhật thường xuyên để bạn nắm thông tin rõ ràng.",
+  openGraph: {
+    title: `Blog | ${site.name}`,
+    description:
+      "Bài viết về rút ví trả sau, thẻ tín dụng và cách tính phí tham khảo tại Hà Nội và online toàn quốc.",
+    url: `${getSiteUrl()}/blog`,
+    type: "website",
+  },
 };
 
 export default function BlogListPage() {
@@ -25,7 +29,7 @@ export default function BlogListPage() {
           </div>
           <h1 className="mt-4 text-2xl font-bold md:text-3xl">Bài viết hỗ trợ thông tin dịch vụ</h1>
           <p className="mt-3 max-w-2xl text-sm text-zinc-600">
-            
+            Cập nhật kiến thức về ví trả sau, mức phí tham khảo và lưu ý khi cần hỗ trợ — nội dung được viết rõ ràng để bạn tra cứu nhanh.
           </p>
         </div>
 
@@ -53,33 +57,9 @@ export default function BlogListPage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          {blogPosts
-            .slice()
-            .sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1))
-            .map((post) => (
-              <article
-                key={post.slug}
-                className="group rounded-3xl border bg-white p-6 shadow-sm transition hover:shadow-md"
-              >
-                <div className="text-xs font-semibold text-emerald-700">
-                  {formatDate(post.dateISO)}
-                </div>
-                <h2 className="mt-2 text-lg font-bold leading-snug">
-                  <Link href={`/blog/${post.slug}`} className="hover:underline">
-                    {post.title}
-                  </Link>
-                </h2>
-                <p className="mt-2 text-sm text-zinc-600">{post.description}</p>
-                <div className="mt-4">
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="text-sm font-semibold text-emerald-700 hover:underline"
-                  >
-                    Xem chi tiết →
-                  </Link>
-                </div>
-              </article>
-            ))}
+          {getLatestPosts().map((post) => (
+            <BlogPostCard key={post.slug} post={post} />
+          ))}
         </div>
 
         <div className="mt-6 rounded-3xl border bg-white p-6">

@@ -2,7 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { CallToActionStrip } from "@/components/CTA/CallToActionStrip";
 import { site } from "@/data/site";
-import { blogPosts } from "@/data/blogPosts";
+import { getLatestPosts } from "@/lib/blog";
+import { BlogPostCard } from "@/components/blog/BlogPostCard";
 
 export const metadata = {
   title: `Rút ví trả sau & thẻ tín dụng - ${site.name}`,
@@ -171,23 +172,8 @@ export default function Home() {
           Cập nhật bài viết mới để bạn tham khảo thông tin dịch vụ và cách tính phí dễ hiểu.
         </p>
         <div className="mt-5 grid gap-4 md:grid-cols-3">
-          {blogPosts.slice(0, 3).map((post) => (
-            <article key={post.slug} className="rounded-3xl border bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-bold leading-snug">
-                <Link href={`/blog/${post.slug}`} className="hover:underline">
-                  {post.title}
-                </Link>
-              </h3>
-              <p className="mt-2 text-sm text-zinc-600">{post.description}</p>
-              <div className="mt-4">
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="text-sm font-semibold text-emerald-700 hover:underline"
-                >
-                  Xem bài viết →
-                </Link>
-              </div>
-            </article>
+          {getLatestPosts(3).map((post) => (
+            <BlogPostCard key={post.slug} post={post} heading="h3" />
           ))}
         </div>
       </section>

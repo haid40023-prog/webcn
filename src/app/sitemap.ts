@@ -1,28 +1,35 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/data/site";
-import { blogPosts } from "@/data/blogPosts";
+import { blogPosts } from "@/data/blog";
+import { getPostUpdatedISO } from "@/lib/blog";
+import { getSiteUrl } from "@/lib/siteUrl";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const url = "https://rutvitrasauhanoi.vn";
+  const base = getSiteUrl();
 
-  const staticRoutes = [
-    "/",
-    "/dich-vu/rut-vi-tra-sau",
-    "/dich-vu/ho-tro-the-tin-dung",
-    "/cong-cu/tinh-phi-tham-khao",
-    "/blog",
-    "/lien-he",
-  ];
+  const staticRoutes: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[0]["changeFrequency"] }[] =
+    [
+      { path: "/", priority: 1, changeFrequency: "weekly" },
+      { path: "/dich-vu/rut-vi-tra-sau", priority: 0.85, changeFrequency: "weekly" },
+      { path: "/dich-vu/ho-tro-the-tin-dung", priority: 0.85, changeFrequency: "weekly" },
+      { path: "/cong-cu/tinh-phi-tham-khao", priority: 0.85, changeFrequency: "weekly" },
+      { path: "/blog", priority: 0.85, changeFrequency: "weekly" },
+      { path: "/lien-he", priority: 0.7, changeFrequency: "monthly" },
+    ];
 
-  const blogRoutes = blogPosts.map((p) => `/blog/${p.slug}`);
-
-  const routes = [...staticRoutes, ...blogRoutes].map((path) => ({
-    url: `${url}${path}`,
+  const staticEntries: MetadataRoute.Sitemap = staticRoutes.map(({ path, priority, changeFrequency }) => ({
+    url: `${base}${path}`,
     lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: path === "/" ? 1 : 0.6,
+    changeFrequency,
+    priority,
   }));
 
-  return routes;
+  const blogEntries: MetadataRoute.Sitemap = blogPosts.map((p) => ({
+    url: `${base}/blog/${p.slug}`,
+    lastModified: new Date(getPostUpdatedISO(p)),
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }));
+
+  return [...staticEntries, ...blogEntries];
 }
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { site } from "@/data/site";
+import { getSiteUrl } from "@/lib/siteUrl";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
@@ -20,11 +21,28 @@ const fontMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: site.name,
     template: `%s | ${site.name}`,
   },
   description: site.metaDescription,
+  openGraph: {
+    type: "website",
+    locale: "vi_VN",
+    siteName: site.name,
+    title: site.name,
+    description: site.metaDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.name,
+    description: site.metaDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
